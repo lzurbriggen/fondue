@@ -1,13 +1,14 @@
 /* (c) Copyright Frontify Ltd., all rights reserved. */
 
 import { type FloatingToolbarState, useFloatingToolbar, useFloatingToolbarState } from '@udecode/plate-floating';
-import { PortalBody, useComposedRef } from '@udecode/react-utils';
+import { useComposedRef } from '@udecode/react-utils';
 import { type ReactNode, forwardRef } from 'react';
 
 import { zIndexLayers } from '@components/RichTextEditor/helpers/zIndexLayers';
 import { merge } from '@utilities/merge';
 
 import { ToolbarWrapper } from './ToolbarWrapper';
+import { createPortal } from 'react-dom';
 
 export const FloatingToolbar = forwardRef<
     HTMLDivElement,
@@ -33,20 +34,22 @@ export const FloatingToolbar = forwardRef<
         return null;
     }
 
-    return (
-        <PortalBody>
-            <ToolbarWrapper
-                ref={ref}
-                style={{
-                    ...rootProps.style,
-                    zIndex: zIndexLayers.floatingToolbar,
-                }}
-                className={merge([className, 'tw-relative tw-flex tw-select-none tw-items-center tw-gap-1'])}
-                {...props}
-            >
-                {children}
-            </ToolbarWrapper>
-        </PortalBody>
+    return createPortal(
+        <ToolbarWrapper
+            ref={ref}
+            style={{
+                ...rootProps.style,
+                zIndex: zIndexLayers.floatingToolbar,
+            }}
+            className={merge([
+                className,
+                "tw-relative tw-flex tw-select-none tw-items-center tw-gap-1",
+            ])}
+            {...props}
+        >
+            {children}
+        </ToolbarWrapper>,
+        document.body,
     );
 });
 
